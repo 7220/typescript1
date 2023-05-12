@@ -62,4 +62,19 @@ export class Board {
       }
     }
   }
+
+  render() {
+    this.cells.forEach(v => v.render())
+  }
+}
+
+export class DeadZone {
+  private cells: Cell[] = []
+  readonly deadzoneEl = document.getElementById(`${this.type}_deadzone`)
+
+  constructor(public type: 'upper' | 'lower') {
+    for (let col = 0; col < 4; col++ ) {
+      const cell = new Cell({ col, row: 0 })
+    }
+  }
 }
