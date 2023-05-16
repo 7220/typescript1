@@ -129,8 +129,8 @@ var Cell = /** @class */function () {
     this.position = position;
     this.piece = piece;
     this.isActive = false;
-    this._el = document.createElement('div');
-    this._el.classList.add('cell');
+    this._el = document.createElement("div");
+    this._el.classList.add("cell");
   }
   Cell.prototype.put = function (piece) {
     this.piece = piece;
@@ -146,9 +146,9 @@ var Cell = /** @class */function () {
   };
   Cell.prototype.render = function () {
     if (this.isActive) {
-      this._el.classList.add('active');
+      this._el.classList.add("active");
     } else {
-      this._el.classList.remove('active');
+      this._el.classList.remove("active");
     }
     this._el.innerHTML = this.piece ? this.piece.render() : "";
   };
@@ -158,11 +158,11 @@ exports.Cell = Cell;
 var Board = /** @class */function () {
   function Board() {
     this.cells = [];
-    this._el = document.createElement('div');
-    this._el.className = 'board';
+    this._el = document.createElement("div");
+    this._el.className = "board";
     for (var row = 0; row < 4; row++) {
-      var rowEl = document.createElement('div');
-      rowEl.className = 'row';
+      var rowEl = document.createElement("div");
+      rowEl.className = "row";
       this._el.appendChild(rowEl);
       for (var col = 0; col < 3; col++) {
         var cell = new Cell({
@@ -184,19 +184,53 @@ var Board = /** @class */function () {
 exports.Board = Board;
 var DeadZone = /** @class */function () {
   function DeadZone(type) {
+    var _a, _b;
     this.type = type;
     this.cells = [];
-    this.deadzoneEl = document.getElementById("".concat(this.type, "_deadzone"));
+    this.deadzoneEl = (_a = document.getElementById("".concat(this.type, "_deadzone"))) === null || _a === void 0 ? void 0 : _a.querySelector(".card-body");
     for (var col = 0; col < 4; col++) {
       var cell = new Cell({
         col: col,
         row: 0
-      });
+      }, null);
+      this.cells.push(cell);
+      (_b = this.deadzoneEl) === null || _b === void 0 ? void 0 : _b.appendChild(cell._el);
     }
   }
+  DeadZone.prototype.put = function (piece) {
+    var emptyCell = this.cells.find(function (v) {
+      return v.getPiece() == null;
+    });
+    emptyCell === null || emptyCell === void 0 ? void 0 : emptyCell.put(piece);
+    emptyCell === null || emptyCell === void 0 ? void 0 : emptyCell.render();
+  };
+  DeadZone.prototype.render = function () {
+    this.cells.forEach(function (v) {
+      return v.render();
+    });
+  };
   return DeadZone;
 }();
 exports.DeadZone = DeadZone;
+},{}],"src/player.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Player = exports.PlayerType = void 0;
+var PlayerType;
+(function (PlayerType) {
+  PlayerType["UPPER"] = "UPPER";
+  PlayerType["LOWER"] = "LOWER";
+})(PlayerType = exports.PlayerType || (exports.PlayerType = {}));
+var Player = /** @class */function () {
+  function Player(type) {
+    this.type = type;
+  }
+  return Player;
+}();
+exports.Player = Player;
 },{}],"src/game.ts":[function(require,module,exports) {
 "use strict";
 
@@ -205,10 +239,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Game = void 0;
 var Board_1 = require("./Board");
+var player_1 = require("./player");
 var Game = /** @class */function () {
   function Game() {
     var _a;
     this.board = new Board_1.Board();
+    this.upperDeadZone = new Board_1.DeadZone("upper");
+    this.lowerDeadZone = new Board_1.DeadZone("lower");
+    this.upperPlayer = new player_1.Player(player_1.PlayerType.UPPER);
+    this.lowerPlayer = new player_1.Player(player_1.PlayerType.LOWER);
     var boardContainer = document.querySelector(".board-container");
     (_a = boardContainer === null || boardContainer === void 0 ? void 0 : boardContainer.firstChild) === null || _a === void 0 ? void 0 : _a.remove();
     boardContainer === null || boardContainer === void 0 ? void 0 : boardContainer.appendChild(this.board._el);
@@ -216,7 +255,7 @@ var Game = /** @class */function () {
   return Game;
 }();
 exports.Game = Game;
-},{"./Board":"src/Board.ts"}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./Board":"src/Board.ts","./player":"src/player.ts"}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 function getBundleURLCached() {
   if (!bundleURL) {
@@ -312,7 +351,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "5888" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "12685" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
