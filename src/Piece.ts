@@ -24,7 +24,7 @@ abstract class DefaultPiece implements Piece {
       throw new Error("can't move")
     }
 
-    const moveResult = new MoveResult((to.getPiece() != null) ? to.getPiece() : null)
+    const moveResult = new MoveResult((to.getPiece() != null) ? to.getPiece() : null);
     to.put(this)
     from.put(null)
     this.currentPosition = to.position
